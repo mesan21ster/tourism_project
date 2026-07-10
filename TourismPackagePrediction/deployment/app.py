@@ -1,0 +1,191 @@
+import streamlit as st
+import pandas as pd
+from huggingface_hub import hf_hub_download
+import joblib
+
+# Download and load the model
+model_path = hf_hub_download(
+    repo_id="mesan21ster/tourism_package_prediction_model",
+    filename="best_tourism_package_model_v1.joblib",
+    repo_type="model"
+)
+
+model = joblib.load(model_path)
+
+# Streamlit UI
+st.title("Tourism Package Prediction App")
+
+st.write("""
+This application predicts whether a customer is likely to purchase a tourism package based on customer information.
+Please enter the customer details below to get a prediction.
+""")
+
+# User Input
+age = st.number_input(
+    "Age",
+    min_value=18,
+    max_value=100,
+    value=35
+)
+
+typeofcontact = st.selectbox(
+    "Type of Contact",
+    [
+        "Self Enquiry",
+        "Company Invited"
+    ]
+)
+
+citytier = st.selectbox(
+    "City Tier",
+    [1, 2, 3]
+)
+
+durationofpitch = st.number_input(
+    "Duration Of Pitch",
+    min_value=0,
+    max_value=500,
+    value=15
+)
+
+occupation = st.selectbox(
+    "Occupation",
+    [
+        "Salaried",
+        "Small Business",
+        "Large Business",
+        "Free Lancer"
+    ]
+)
+
+gender = st.selectbox(
+    "Gender",
+    [
+        "Male",
+        "Female"
+    ]
+)
+
+numberofpersonvisiting = st.number_input(
+    "Number Of Persons Visiting",
+    min_value=1,
+    max_value=10,
+    value=2
+)
+
+numberoffollowups = st.number_input(
+    "Number Of Follow Ups",
+    min_value=0,
+    max_value=10,
+    value=3
+)
+
+productpitched = st.selectbox(
+    "Product Pitched",
+    [
+        "Basic",
+        "Standard",
+        "Deluxe",
+        "Super Deluxe",
+        "King"
+    ]
+)
+
+preferredpropertystar = st.selectbox(
+    "Preferred Property Star",
+    [3, 4, 5]
+)
+
+maritalstatus = st.selectbox(
+    "Marital Status",
+    [
+        "Single",
+        "Married",
+        "Divorced"
+    ]
+)
+
+numberoftrips = st.number_input(
+    "Number Of Trips",
+    min_value=0,
+    max_value=30,
+    value=2
+)
+
+passport = st.selectbox(
+    "Passport",
+    [0, 1]
+)
+
+pitchsatisfactionscore = st.slider(
+    "Pitch Satisfaction Score",
+    1,
+    5,
+    3
+)
+
+owncar = st.selectbox(
+    "Own Car",
+    [0, 1]
+)
+
+numberofchildrenvisiting = st.number_input(
+    "Number Of Children Visiting",
+    min_value=0,
+    max_value=5,
+    value=0
+)
+
+designation = st.selectbox(
+    "Designation",
+    [
+        "Executive",
+        "Manager",
+        "Senior Manager",
+        "AVP",
+        "VP"
+    ]
+)
+
+monthlyincome = st.number_input(
+    "Monthly Income",
+    min_value=1000,
+    max_value=500000,
+    value=25000
+)
+
+# Create DataFrame
+
+input_data = pd.DataFrame([{
+
+    "Age": age,
+    "TypeofContact": typeofcontact,
+    "CityTier": citytier,
+    "DurationOfPitch": durationofpitch,
+    "Occupation": occupation,
+    "Gender": gender,
+    "NumberOfPersonVisiting": numberofpersonvisiting,
+    "NumberOfFollowups": numberoffollowups,
+    "ProductPitched": productpitched,
+    "PreferredPropertyStar": preferredpropertystar,
+    "MaritalStatus": maritalstatus,
+    "NumberOfTrips": numberoftrips,
+    "Passport": passport,
+    "PitchSatisfactionScore": pitchsatisfactionscore,
+    "OwnCar": owncar,
+    "NumberOfChildrenVisiting": numberofchildrenvisiting,
+    "Designation": designation,
+    "MonthlyIncome": monthlyincome
+
+}])
+
+# Prediction
+
+if st.button("Predict"):
+
+    prediction = model.predict(input_data)[0]
+
+    if prediction == 1:
+        st.success("The customer is likely to purchase the Tourism Package.")
+    else:
+        st.warning("The customer is unlikely to purchase the Tourism Package.")
