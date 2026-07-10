@@ -1,8 +1,6 @@
 from huggingface_hub import HfApi
 import os
 
-from google.colab import userdata
-
 token=os.getenv("HF_MLOps")   # please use your token
 
 api = HfApi(token=os.getenv("HF_MLOps"))
