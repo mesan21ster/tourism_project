@@ -13,7 +13,7 @@ model_path = hf_hub_download(
 model = joblib.load(model_path)
 
 # Streamlit UI
-st.title("Tourism Package Prediction App")
+st.title("Tourism Package Prediction")
 
 st.write("""
 This application predicts whether a customer is likely to purchase a tourism package based on customer information.
